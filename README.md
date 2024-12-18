@@ -27,7 +27,7 @@ php bin/console doctrine:database:create
 php bin/console doctrine:migrations:migrate
 ```
 
-5. Chargez les fixtures (données de test) si nécessaire :
+5. Chargez les fixtures (données de test) :
 ```bash
 php bin/console doctrine:fixtures:load
 ```
@@ -36,6 +36,24 @@ php bin/console doctrine:fixtures:load
 ```bash
 symfony serve -d
 ```
+
+## Comptes de test
+
+### Administrateur
+- Email : `admin@bibliotheque.fr`
+- Mot de passe : `Admin@123!`
+- Rôle : ROLE_ADMIN
+
+### Utilisateurs de test
+1. Premier utilisateur :
+   - Email : `user@example.com`
+   - Mot de passe : `User@123!`
+   - Rôle : ROLE_USER
+
+2. Deuxième utilisateur :
+   - Email : `marie@example.com`
+   - Mot de passe : `User@123!`
+   - Rôle : ROLE_USER
 
 ## Fonctionnalités
 

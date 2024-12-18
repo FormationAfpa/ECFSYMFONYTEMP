@@ -37,20 +37,7 @@ php bin/console doctrine:fixtures:load
 symfony serve -d
 ```
 
-## Comptes de test
 
-### Utilisateurs de test
-1. Premier utilisateur :
-   - Email : `user@example.com`
-   - Mot de passe : `User@123!`
-   - Rôle : ROLE_USER
-
-2. Deuxième utilisateur :
-   - Email : `marie@example.com`
-   - Mot de passe : `User@123!`
-   - Rôle : ROLE_USER
-
-Note : Les identifiants du compte administrateur seront fournis séparément pour des raisons de sécurité.
 
 ## Fonctionnalités
 
@@ -60,18 +47,3 @@ Note : Les identifiants du compte administrateur seront fournis séparément pou
 - Gestion des abonnements
 - Authentification des utilisateurs
 
-## Sécurité
-
-- Ne jamais commiter les fichiers `.env` contenant des informations sensibles
-- Toujours utiliser `.env.local` pour les configurations locales
-- Les secrets de production doivent être gérés via les variables d'environnement
-
-## Contribution
-
-1. Créez une branche pour votre fonctionnalité
-2. Committez vos changements
-3. Créez une Pull Request
-
-## License
-
-[Votre licence]

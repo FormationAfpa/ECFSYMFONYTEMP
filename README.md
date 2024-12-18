@@ -39,11 +39,6 @@ symfony serve -d
 
 ## Comptes de test
 
-### Administrateur
-- Email : `admin@bibliotheque.fr`
-- Mot de passe : `Admin@123!`
-- Rôle : ROLE_ADMIN
-
 ### Utilisateurs de test
 1. Premier utilisateur :
    - Email : `user@example.com`
@@ -54,6 +49,8 @@ symfony serve -d
    - Email : `marie@example.com`
    - Mot de passe : `User@123!`
    - Rôle : ROLE_USER
+
+Note : Les identifiants du compte administrateur seront fournis séparément pour des raisons de sécurité.
 
 ## Fonctionnalités
 

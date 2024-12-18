@@ -52,3 +52,5 @@ desktop.ini
 # Cascade files
 /.cascade/
 .cascade/
+*.cascade
+cascade.json

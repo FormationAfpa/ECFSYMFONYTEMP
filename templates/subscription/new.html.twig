@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvel Abonnement - {{ parent() }}{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h2 mb-0">Nouvel Abonnement</h1>
+                <a href="{{ path('app_subscription') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Retour
+                </a>
+            </div>
+
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="h4 mb-4">
+                        {% if type == 'monthly' %}
+                            Abonnement Mensuel
+                        {% else %}
+                            Abonnement Annuel
+                        {% endif %}
+                    </h2>
+
+                    <div class="alert alert-info mb-4">
+                        <h3 class="h5">Détails de l'abonnement</h3>
+                        <ul class="mb-0">
+                            {% if type == 'monthly' %}
+                                <li>Prix mensuel : {{ constant('App\\Entity\\Subscription::MONTHLY_PRICE')|number_format(2, ',', ' ') }} €</li>
+                                <li>Engagement : 1 mois</li>
+                            {% else %}
+                                {% set annualPrice = constant('App\\Entity\\Subscription::MONTHLY_PRICE') * 12 * (1 - constant('App\\Entity\\Subscription::ANNUAL_DISCOUNT')) %}
+                                <li>Prix mensuel : {{ (annualPrice / 12)|number_format(2, ',', ' ') }} €</li>
+                                <li>Engagement : 1 an</li>
+                                <li>Économie : {{ (constant('App\\Entity\\Subscription::ANNUAL_DISCOUNT') * 100)|number_format(0) }}%</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+
+                    {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                    
+                    <div class="alert alert-warning">
+                        <p class="mb-0">
+                            <i class="fas fa-info-circle me-2"></i>
+                            En validant ce formulaire, vous acceptez les conditions générales d'utilisation et vous vous engagez à payer l'abonnement pour la durée choisie.
+                        </p>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-check me-2"></i>Confirmer l'abonnement
+                        </button>
+                        <a href="{{ path('app_subscription') }}" class="btn btn-link">Annuler</a>
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

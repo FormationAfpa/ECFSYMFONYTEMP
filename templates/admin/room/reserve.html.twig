@@ -1,0 +1,114 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réserver la salle {{ room.name }}{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Réserver la salle {{ room.name }}</h1>
+        <div>
+            <a href="{{ path('admin_room_calendar', {'id': room.id}) }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Retour au calendrier
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    {{ form_start(form, {'attr': {'class': 'needs-validation'}}) }}
+                    
+                    <div class="mb-3">
+                        {{ form_label(form.startTime) }}
+                        {{ form_widget(form.startTime) }}
+                        {{ form_errors(form.startTime) }}
+                        <small class="form-text text-muted">Les réservations sont possibles entre 8h et 19h, du lundi au vendredi.</small>
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(form.endTime) }}
+                        {{ form_widget(form.endTime) }}
+                        {{ form_errors(form.endTime) }}
+                        <small class="form-text text-muted">La durée maximale de réservation est de 4 heures.</small>
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(form.purpose) }}
+                        {{ form_widget(form.purpose) }}
+                        {{ form_errors(form.purpose) }}
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i>Créer la réservation
+                    </button>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Informations sur la salle</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Capacité :</strong> {{ room.capacity }} personnes</p>
+                    <p><strong>Équipements disponibles :</strong></p>
+                    <ul class="list-unstyled">
+                        {% if room.hasWifi %}
+                            <li><i class="fas fa-wifi me-2"></i>Wi-Fi</li>
+                        {% endif %}
+                        {% if room.hasProjector %}
+                            <li><i class="fas fa-projector me-2"></i>Projecteur</li>
+                        {% endif %}
+                        {% if room.hasWhiteboard %}
+                            <li><i class="fas fa-chalkboard me-2"></i>Tableau</li>
+                        {% endif %}
+                        {% if room.hasPowerOutlets %}
+                            <li><i class="fas fa-plug me-2"></i>Prises électriques</li>
+                        {% endif %}
+                        {% if room.hasTV %}
+                            <li><i class="fas fa-tv me-2"></i>Télévision</li>
+                        {% endif %}
+                        {% if room.hasAirConditioning %}
+                            <li><i class="fas fa-snowflake me-2"></i>Climatisation</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ajouter une validation en temps réel pour la durée de réservation
+            const startTimeInput = document.querySelector('#room_reservation_startTime');
+            const endTimeInput = document.querySelector('#room_reservation_endTime');
+
+            function validateReservationTime() {
+                if (startTimeInput.value && endTimeInput.value) {
+                    const start = new Date(startTimeInput.value);
+                    const end = new Date(endTimeInput.value);
+                    const duration = (end - start) / (1000 * 60 * 60); // durée en heures
+
+                    if (duration > 4) {
+                        endTimeInput.setCustomValidity('La durée de réservation ne peut pas dépasser 4 heures');
+                    } else if (duration <= 0) {
+                        endTimeInput.setCustomValidity('L\'heure de fin doit être après l\'heure de début');
+                    } else {
+                        endTimeInput.setCustomValidity('');
+                    }
+                }
+            }
+
+            startTimeInput.addEventListener('change', validateReservationTime);
+            endTimeInput.addEventListener('change', validateReservationTime);
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Utilisateurs{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Gestion des Utilisateurs</h1>
+        <a href="{{ path('app_admin_dashboard') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Retour au tableau de bord
+        </a>
+    </div>
+
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Email</th>
+                    <th>Rôle</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td>{{ user.email }}</td>
+                        <td>
+                            {% if 'ROLE_ADMIN' in user.roles %}
+                                <span class="badge bg-danger">Administrateur</span>
+                            {% else %}
+                                <span class="badge bg-info">Utilisateur</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if user.isBanned %}
+                                <span class="badge bg-danger">Banni</span>
+                            {% else %}
+                                <span class="badge bg-success">Actif</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if app.user != user %}
+                                <div class="btn-group" role="group">
+                                    <form action="{{ path('app_admin_toggle_ban', {'id': user.id}) }}" method="POST" class="me-2">
+                                        <button type="submit" class="btn btn-{{ user.isBanned ? 'success' : 'warning' }} btn-sm">
+                                            {% if user.isBanned %}
+                                                <i class="fas fa-user-check me-1"></i>Débannir
+                                            {% else %}
+                                                <i class="fas fa-user-slash me-1"></i>Bannir
+                                            {% endif %}
+                                        </button>
+                                    </form>
+
+                                    <form action="{{ path('app_admin_toggle_role', {'id': user.id}) }}" method="POST">
+                                        <button type="submit" class="btn btn-{{ 'ROLE_ADMIN' in user.roles ? 'warning' : 'info' }} btn-sm">
+                                            {% if 'ROLE_ADMIN' in user.roles %}
+                                                <i class="fas fa-user me-1"></i>Retirer admin
+                                            {% else %}
+                                                <i class="fas fa-user-shield me-1"></i>Faire admin
+                                            {% endif %}
+                                        </button>
+                                    </form>
+                                </div>
+                            {% else %}
+                                <em class="text-muted">Compte actuel</em>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

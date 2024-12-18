@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Bibliothèque - Accueil{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <h1 class="display-4 mb-4">Bienvenue à la Bibliothèque</h1>
+            {% if app.user %}
+                <p class="lead mb-5">Bonjour {{ app.user.firstname }}, découvrez nos services ci-dessous.</p>
+            {% else %}
+                <p class="lead mb-5">Découvrez notre collection de livres et réservez vos salles d'étude en quelques clics.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-book me-2"></i>
+                        Collection de Livres
+                    </h5>
+                    <p class="card-text">Parcourez notre vaste collection de livres, des classiques aux nouveautés.</p>
+                    <a href="{{ path('app_book_index') }}" class="btn btn-primary">
+                        {% if app.user %}
+                            Explorer le catalogue
+                        {% else %}
+                            Voir les livres
+                        {% endif %}
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-door-open me-2"></i>
+                        Salles d'Étude
+                    </h5>
+                    <p class="card-text">Réservez une salle de travail pour vos sessions de travail individuelles ou en groupe.</p>
+                    <a href="{{ path('app_room_index') }}" class="btn btn-primary">
+                        {% if app.user %}
+                            Réserver une salle
+                        {% else %}
+                            Voir les salles
+                        {% endif %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if not app.user %}
+        <div class="row mt-5">
+            <div class="col-md-12 text-center">
+                <h2 class="h4 mb-4">Pas encore membre ?</h2>
+                <a href="{{ path('app_register') }}" class="btn btn-lg btn-outline-primary">
+                    <i class="fas fa-user-plus me-2"></i>
+                    Créer un compte
+                </a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

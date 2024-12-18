@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes réservations de salles{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Mes réservations de salles</h1>
+        <a href="{{ path('app_room_index') }}" class="btn btn-primary">
+            <i class="fas fa-search me-2"></i>Réserver une salle
+        </a>
+    </div>
+
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    {% if reservations|length > 0 %}
+        <div class="row">
+            {% for reservation in reservations %}
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 {% if reservation.startTime < date() %}bg-light{% endif %}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ reservation.room.name }}</h5>
+                            <div class="card-text">
+                                <p>
+                                    <strong>Date :</strong> {{ reservation.startTime|date('d/m/Y') }}<br>
+                                    <strong>Horaires :</strong> {{ reservation.startTime|date('H:i') }} - {{ reservation.endTime|date('H:i') }}<br>
+                                    <strong>Durée :</strong> {{ (reservation.endTime.timestamp - reservation.startTime.timestamp) / 3600 }} heure(s)<br>
+                                    <strong>Motif :</strong> {{ reservation.purpose }}
+                                </p>
+
+                                <h6>Équipements disponibles :</h6>
+                                <ul class="list-unstyled">
+                                    {% if reservation.room.hasWifi %}
+                                        <li><i class="fas fa-wifi me-2"></i>Wi-Fi</li>
+                                    {% endif %}
+                                    {% if reservation.room.hasTV %}
+                                        <li><i class="fas fa-tv me-2"></i>Télévision</li>
+                                    {% endif %}
+                                    {% if reservation.room.hasProjector %}
+                                        <li><i class="fas fa-projector me-2"></i>Projecteur</li>
+                                    {% endif %}
+                                    {% if reservation.room.hasWhiteboard %}
+                                        <li><i class="fas fa-chalkboard me-2"></i>Tableau blanc</li>
+                                    {% endif %}
+                                    {% if reservation.room.hasPowerOutlets %}
+                                        <li><i class="fas fa-plug me-2"></i>Prises électriques</li>
+                                    {% endif %}
+                                    {% if reservation.room.hasAirConditioning %}
+                                        <li><i class="fas fa-snowflake me-2"></i>Climatisation</li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+
+                            {% if reservation.startTime > date() %}
+                                <div class="mt-3">
+                                    <a href="{{ path('app_room_show', {'id': reservation.room.id}) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-calendar-alt me-2"></i>Voir les disponibilités
+                                    </a>
+                                </div>
+                            {% else %}
+                                <div class="badge bg-secondary mt-2">Réservation passée</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <p class="mb-0">Vous n'avez pas encore de réservation de salle. 
+                <a href="{{ path('app_room_index') }}">Réserver une salle maintenant</a>
+            </p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

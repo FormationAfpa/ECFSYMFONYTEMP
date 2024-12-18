@@ -1,0 +1,86 @@
+nav:
+    home: 'Bibliothèque'
+    books: 'Livres'
+    rooms: 'Salles'
+    login: 'Connexion'
+    logout: 'Déconnexion'
+    register: 'Inscription'
+    profile: 'Mon Profil'
+
+app:
+    common:
+        welcome: 'Bienvenue à la bibliothèque'
+        login: 'Connexion'
+        register: 'Inscription'
+        logout: 'Déconnexion'
+        profile: 'Mon profil'
+
+books:
+    page_title: 'Livres'
+    catalog_title: 'Catalogue des livres'
+    title: 'Titre'
+    author: 'Auteur'
+    year: 'Année de publication'
+    summary: 'Résumé'
+    condition: 'État'
+    available: 'Disponible'
+    unavailable: 'Indisponible'
+    borrow: 'Emprunter'
+    return: 'Retourner'
+    extend: 'Prolonger'
+    view_details: 'Voir les détails'
+    no_books: 'Aucun livre disponible pour le moment'
+    conditions:
+        excellent: 'Excellent état'
+        good: 'Bon état'
+        fair: 'État moyen'
+        poor: 'Mauvais état'
+
+rooms:
+    title: 'Salles'
+    page_title: 'Liste des salles'
+    capacity: 'Capacité'
+    persons: 'personnes'
+    reservation_duration: 'Durée de réservation'
+    min: 'minimum'
+    max: 'maximum'
+    consecutive: 'consécutives'
+    by: 'par'
+    user: 'utilisateur'
+    login_to_reserve: 'Connectez-vous pour réserver une salle'
+    reserve: 'Réserver cette salle'
+    no_rooms_available: 'Aucune salle n''est disponible pour le moment.'
+
+room:
+    equipment: 'Équipements'
+    features:
+        wifi: 'Wi-Fi'
+        projector: 'Projecteur'
+        whiteboard: 'Tableau'
+        power: 'Prises électriques'
+
+reservation:
+    success: 'Réservation effectuée avec succès'
+    error: 'Erreur lors de la réservation'
+    duration:
+        min: '1 heure minimum'
+        max: '4 heures maximum'
+
+login:
+    title: 'Connexion'
+    email: 'Email'
+    password: 'Mot de passe'
+    submit: 'Se connecter'
+    register_link: 'Pas encore de compte ?'
+
+register:
+    title: 'Inscription'
+    email: 'Email'
+    password: 'Mot de passe'
+    submit: 'S''inscrire'
+    login_link: 'Déjà inscrit ?'
+
+home:
+    title: 'Bibliothèque - Accueil'
+    welcome: 'Bienvenue à la Bibliothèque'
+    description: 'Découvrez notre collection de livres et nos salles de travail'

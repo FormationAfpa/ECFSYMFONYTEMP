@@ -1,0 +1,139 @@
+app:
+    common:
+        welcome: 'Welcome to the library'
+        login: 'Login'
+        register: 'Register'
+        logout: 'Logout'
+        profile: 'My profile'
+        
+    book:
+        title: 'Title'
+        author: 'Author'
+        year: 'Publication year'
+        summary: 'Summary'
+        condition: 'Condition'
+        available: 'Available'
+        unavailable: 'Unavailable'
+        conditions:
+            excellent: 'Excellent condition'
+            good: 'Good condition'
+            fair: 'Fair condition'
+            poor: 'Poor condition'
+        borrow: 'Borrow'
+        return: 'Return'
+        extend: 'Extend'
+        
+    subscription:
+        monthly: 'Monthly subscription'
+        annual: 'Annual subscription'
+        subscribe: 'Subscribe'
+        
+    room:
+        name: 'Room name'
+        capacity: 'Capacity'
+        equipment: 'Equipment'
+        book_room: 'Book room'
+        equipments:
+            wifi: 'Wi-Fi'
+            projector: 'Projector'
+            whiteboard: 'Whiteboard'
+            power: 'Power outlets'
+            tv: 'TV'
+            ac: 'Air conditioning'
+
+nav:
+  home: 'Library'
+  books: 'Books'
+  rooms: 'Rooms'
+  login: 'Login'
+  logout: 'Logout'
+  register: 'Register'
+  profile: 'My Profile'
+  language: 'Language'
+
+room:
+  title: 'Our Work Rooms'
+  capacity: 'Capacity'
+  equipment: 'Equipment'
+  persons: 'people'
+  wifi: 'Wi-Fi'
+  projector: 'Projector'
+  whiteboard: 'Whiteboard'
+  power_outlets: 'Power Outlets'
+  tv: 'Television'
+  air_conditioning: 'Air Conditioning'
+  book_room: 'Book this room'
+  login_to_book: 'Login to book'
+  no_rooms: 'No rooms available at the moment.'
+  reservation:
+    title: 'Book the Room'
+    start_time: 'Start Time'
+    end_time: 'End Time'
+    submit: 'Book'
+    success: 'Room has been successfully booked.'
+    error: 'Room is already booked for this period.'
+    info: 'Important Information'
+    rules:
+      weekdays: 'Bookings are available Monday through Friday'
+      hours: 'Hours: 8 AM to 7 PM'
+      min_duration: 'Minimum duration: 1 hour'
+      max_duration: 'Maximum duration: 4 hours'
+
+home:
+  title: 'Library - Home'
+  welcome: 'Welcome to the Library'
+  subtitle: 'Discover our book collection and book your study rooms in just a few clicks.'
+  books:
+    title: 'Book Collection'
+    description: 'Browse through our vast collection of books, from classics to new releases.'
+    button: 'View Books'
+  rooms:
+    title: 'Study Rooms'
+    description: 'Book a study room for your individual or group work sessions.'
+    button: 'Book a Room'
+  register:
+    title: 'Not a member yet?'
+    button: 'Create Account'
+
+auth:
+  login:
+    title: 'Login'
+    email: 'Email'
+    password: 'Password'
+    submit: 'Sign in'
+    register_link: 'Create account'
+  register:
+    title: 'Register'
+    email: 'Email'
+    password: 'Password'
+    repeat_password: 'Repeat Password'
+    submit: 'Sign up'
+    login_link: 'Already registered?'
+
+books:
+  page_title: 'Books'
+  catalog_title: 'Book Catalog'
+  title: 'Our Collection'
+  author: 'Author'
+  category: 'Category'
+  available: 'Available'
+  unavailable: 'Unavailable'
+  view_details: 'View details'
+  no_books: 'No books are currently available.'
+
+rooms:
+  page_title: 'Study Rooms'
+  title: 'Our Study Rooms'
+  capacity: 'Capacity'
+  persons: 'people'
+  amenities: 'Features'
+  reserve: 'Book this room'
+  login_to_reserve: 'Login to make a reservation'
+  no_rooms_available: 'No rooms are currently available.'
+  amenities_list:
+    wifi: 'Wi-Fi'
+    projector: 'Projector'
+    whiteboard: 'Whiteboard'
+    power_outlets: 'Power Outlets'
+    tv: 'Television'
+    ac: 'Air Conditioning'

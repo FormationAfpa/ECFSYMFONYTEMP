@@ -1,0 +1,268 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ book.title }} - {{ parent() }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/rating.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-4">
+                {% if book.image %}
+                    <img src="{{ asset('uploads/books/' ~ book.image) }}" class="img-fluid rounded shadow" alt="{{ book.title }}">
+                {% else %}
+                    <div class="bg-light rounded text-center py-5">
+                        <i class="fas fa-book fa-5x text-muted"></i>
+                    </div>
+                {% endif %}
+
+                <div class="mt-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Informations</h5>
+                            <ul class="list-unstyled mb-0">
+                                <li class="mb-2">
+                                    <i class="fas fa-barcode me-2"></i>
+                                    <strong>ISBN:</strong> {{ book.isbn|default('Non renseigné') }}
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-calendar me-2"></i>
+                                    <strong>Année:</strong> {{ book.publicationYear }}
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-bookmark me-2"></i>
+                                    <strong>Catégorie:</strong> {{ book.category ? book.category.name : 'Non catégorisé' }}
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-thermometer-half me-2"></i>
+                                    <strong>État:</strong> {{ book.condition }}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    {# Statut du livre et actions #}
+                    <div class="card mt-3">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-book-reader me-2"></i>Statut
+                            </h5>
+                            
+                            {% if book.isAvailable %}
+                                <div class="alert alert-success mb-3">
+                                    <i class="fas fa-check-circle me-2"></i>
+                                    Disponible à l'emprunt
+                                </div>
+                                
+                                {% if app.user %}
+                                    {% if app.user.subscription %}
+                                        <form action="{{ path('app_book_borrow', {'id': book.id}) }}" method="post" class="d-grid">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fas fa-hand-holding-heart me-2"></i>
+                                                Emprunter ce livre
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <div class="d-grid">
+                                            <a href="{{ path('app_subscription') }}" class="btn btn-warning">
+                                                <i class="fas fa-crown me-2"></i>
+                                                S'abonner pour emprunter
+                                            </a>
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        <a href="{{ path('app_login') }}" class="alert-link">Connectez-vous</a> pour emprunter ce livre.
+                                    </div>
+                                {% endif %}
+                            {% else %}
+                                <div class="alert alert-warning mb-3">
+                                    <i class="fas fa-clock me-2"></i>
+                                    Actuellement emprunté
+                                    {% if book.currentLoan %}
+                                        <br>
+                                        <small>Retour prévu le {{ book.currentLoan.dueDate|date('d/m/Y') }}</small>
+                                    {% endif %}
+                                </div>
+
+                                {% if app.user and book.currentLoan and book.currentLoan.user == app.user %}
+                                    <div class="d-grid gap-2">
+                                        <form action="{{ path('app_book_return', {'id': book.id}) }}" method="post" class="d-grid mb-2">
+                                            <button type="submit" class="btn btn-success">
+                                                <i class="fas fa-undo-alt me-2"></i>
+                                                Retourner le livre
+                                            </button>
+                                        </form>
+
+                                        {% if not book.currentLoan.isExtended %}
+                                            <form action="{{ path('app_book_extend', {'id': book.id}) }}" method="post" class="d-grid">
+                                                <button type="submit" class="btn btn-outline-primary">
+                                                    <i class="fas fa-clock me-2"></i>
+                                                    Prolonger l'emprunt (6 jours)
+                                                </button>
+                                            </form>
+                                        {% else %}
+                                            <div class="alert alert-info">
+                                                <i class="fas fa-info-circle me-2"></i>
+                                                L'emprunt a déjà été prolongé
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <nav aria-label="breadcrumb" class="mb-3">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ path('app_book_index') }}">Catalogue</a></li>
+                        {% if book.category %}
+                            <li class="breadcrumb-item">
+                                <a href="{{ path('app_book_index', {'category': book.category.id}) }}">
+                                    {{ book.category.name }}
+                                </a>
+                            </li>
+                        {% endif %}
+                        <li class="breadcrumb-item active" aria-current="page">{{ book.title }}</li>
+                    </ol>
+                </nav>
+
+                <h1 class="mb-3">{{ book.title }}</h1>
+                <h4 class="text-muted mb-4">par {{ book.author }}</h4>
+
+                <div class="mb-4">
+                    {% if book.isAvailable %}
+                        <span class="badge bg-success mb-2">Disponible</span>
+                    {% else %}
+                        <div class="status-container {% if book.currentLoan and book.currentLoan.isOverdue %}overdue-warning{% endif %}">
+                            <span class="badge bg-danger mb-2">Indisponible</span>
+                            {% if book.currentLoan %}
+                                <p class="mb-0 text-muted">
+                                    <i class="fas fa-calendar-alt me-1"></i>
+                                    Retour prévu le {{ book.currentLoan.dueDate|date('d/m/Y') }}
+                                    {% if book.currentLoan.isOverdue %}
+                                        <span class="text-danger">
+                                            <i class="fas fa-exclamation-triangle"></i>
+                                            En retard
+                                        </span>
+                                    {% endif %}
+                                </p>
+                                {% if book.currentLoan.isExtended %}
+                                    <p class="text-info mb-0">
+                                        <i class="fas fa-info-circle"></i>
+                                        Prêt déjà prolongé
+                                    </p>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                {% if book.summary %}
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title mb-3">Résumé</h5>
+                            <p class="card-text">{{ book.summary|nl2br }}</p>
+                        </div>
+                    </div>
+                {% endif %}
+
+                {% if book.category and book.category.description %}
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title mb-3">À propos de la catégorie {{ book.category.name }}</h5>
+                            <p class="card-text">{{ book.category.description }}</p>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Note moyenne</h5>
+                        <div class="average-rating">
+                            <span class="rating-value">{{ book.averageRating|number_format(1) }}/5</span>
+                            <div class="rating-stars">
+                                {% for i in 1..5 %}
+                                    <i class="fas fa-star {% if i <= book.averageRating %}text-warning{% endif %}"></i>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="comments-section mt-5">
+                    <h3 class="mb-4">Commentaires</h3>
+
+                    {% if app.user %}
+                        <div class="card mt-4">
+                            <div class="card-body">
+                                {{ form_start(commentForm) }}
+                                <div class="mb-3">
+                                    <div class="rating-group">
+                                        {% for i in 1..5 %}
+                                            <span class="star" data-value="{{ i }}">★</span>
+                                        {% endfor %}
+                                        {{ form_widget(commentForm.rating, {'attr': {'required': 'required'}}) }}
+                                    </div>
+                                    {{ form_errors(commentForm.rating) }}
+                                </div>
+                                <div class="mb-3">
+                                    {{ form_row(commentForm.content) }}
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-paper-plane me-2"></i>Publier
+                                </button>
+                                {{ form_end(commentForm) }}
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <a href="{{ path('app_login') }}">Connectez-vous</a> pour laisser un commentaire.
+                        </div>
+                    {% endif %}
+
+                    <div class="comments-list mt-4">
+                        {% if book.comments|length > 0 %}
+                            {% for comment in book.comments|sort((a, b) => b.createdAt <=> a.createdAt) %}
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <div>
+                                                <strong>{{ comment.user.firstName }} {{ comment.user.lastName }}</strong>
+                                                <div class="rating-display" data-rating="{{ comment.rating }}">
+                                                    {% for i in 1..5 %}
+                                                        <span class="star">★</span>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                            <small class="text-muted">{{ comment.createdAt|date('d/m/Y H:i') }}</small>
+                                        </div>
+                                        <p class="card-text mb-0">{{ comment.content|nl2br }}</p>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="alert alert-light text-center">
+                                <i class="fas fa-comments text-muted mb-2" style="font-size: 2rem;"></i>
+                                <p class="mb-0">Aucun commentaire pour le moment. Soyez le premier à donner votre avis !</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/rating.js') }}"></script>
+{% endblock %}

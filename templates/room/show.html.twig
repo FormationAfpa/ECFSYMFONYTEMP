@@ -1,0 +1,156 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réserver {{ room.name }}{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1 class="mb-4">Réserver {{ room.name }}</h1>
+
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Informations sur la salle</h5>
+                    <p class="card-text">
+                        <strong>Capacité :</strong> {{ room.capacity }} personnes<br>
+                        <strong>Équipements :</strong>
+                    </p>
+                    <ul class="list-unstyled">
+                        {% if room.hasWifi %}
+                            <li><i class="fas fa-wifi me-2 text-success"></i>Wi-Fi</li>
+                        {% endif %}
+                        {% if room.hasProjector %}
+                            <li><i class="fas fa-projector me-2 text-success"></i>Projecteur</li>
+                        {% endif %}
+                        {% if room.hasWhiteboard %}
+                            <li><i class="fas fa-chalkboard me-2 text-success"></i>Tableau blanc</li>
+                        {% endif %}
+                        {% if room.hasPowerOutlets %}
+                            <li><i class="fas fa-plug me-2 text-success"></i>Prises électriques</li>
+                        {% endif %}
+                        {% if room.hasTV %}
+                            <li><i class="fas fa-tv me-2 text-success"></i>Télévision</li>
+                        {% endif %}
+                        {% if room.hasAirConditioning %}
+                            <li><i class="fas fa-snowflake me-2 text-success"></i>Climatisation</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Règles de réservation</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-clock me-2"></i>Durée minimale : 1 heure</li>
+                        <li><i class="fas fa-clock me-2"></i>Durée maximale : 4 heures</li>
+                        <li><i class="fas fa-calendar-alt me-2"></i>Réservation possible de 8h à 19h</li>
+                        <li><i class="fas fa-info-circle me-2"></i>Un abonnement actif est requis</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            {% if not app.user %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Vous devez être <a href="{{ path('app_login') }}">connecté</a> pour réserver une salle.
+                </div>
+            {% elseif not app.user.hasActiveSubscription %}
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    Vous devez avoir un abonnement actif pour réserver une salle. 
+                    <a href="{{ path('app_subscription') }}">Voir les abonnements disponibles</a>
+                </div>
+            {% else %}
+                {{ form_start(reservationForm, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Réserver la salle</h5>
+                            
+                            <div class="mb-3">
+                                {{ form_label(reservationForm.startTime, 'Heure de début', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(reservationForm.startTime, {
+                                    'attr': {
+                                        'class': 'form-control' ~ (reservationForm.startTime.vars.valid ? '' : ' is-invalid'),
+                                        'min': "now"|date('Y-m-d\\TH:i'),
+                                        'max': "now"|date_modify("+1 month")|date('Y-m-d\\TH:i')
+                                    }
+                                }) }}
+                                {{ form_errors(reservationForm.startTime) }}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form_label(reservationForm.endTime, 'Heure de fin', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(reservationForm.endTime, {
+                                    'attr': {
+                                        'class': 'form-control' ~ (reservationForm.endTime.vars.valid ? '' : ' is-invalid'),
+                                        'min': "now"|date('Y-m-d\\TH:i'),
+                                        'max': "now"|date_modify("+1 month")|date('Y-m-d\\TH:i')
+                                    }
+                                }) }}
+                                {{ form_errors(reservationForm.endTime) }}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form_label(reservationForm.purpose, 'Objet de la réservation', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(reservationForm.purpose, {
+                                    'attr': {
+                                        'class': 'form-control' ~ (reservationForm.purpose.vars.valid ? '' : ' is-invalid'),
+                                        'placeholder': 'Ex: Réunion de projet, Travail en groupe...'
+                                    }
+                                }) }}
+                                {{ form_errors(reservationForm.purpose) }}
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-calendar-check me-2"></i>Réserver
+                            </button>
+                            <a href="{{ path('app_room_index') }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Retour
+                            </a>
+                        </div>
+                    </div>
+                {{ form_end(reservationForm) }}
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const startTimeInput = document.querySelector('#{{ reservationForm.startTime.vars.id }}');
+    const endTimeInput = document.querySelector('#{{ reservationForm.endTime.vars.id }}');
+
+    if (startTimeInput && endTimeInput) {
+        startTimeInput.addEventListener('change', function() {
+            // Set minimum end time to start time
+            endTimeInput.min = startTimeInput.value;
+            
+            // Calculate maximum end time (start time + 4 hours)
+            const startDate = new Date(startTimeInput.value);
+            const maxEndDate = new Date(startDate.getTime() + (4 * 60 * 60 * 1000));
+            endTimeInput.max = maxEndDate.toISOString().slice(0, 16);
+        });
+
+        // Set initial values
+        if (startTimeInput.value) {
+            const event = new Event('change');
+            startTimeInput.dispatchEvent(event);
+        }
+    }
+});
+</script>
+{% endblock %}

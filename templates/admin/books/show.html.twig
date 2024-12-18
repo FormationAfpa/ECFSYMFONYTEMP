@@ -1,0 +1,191 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails du livre{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>{{ book.title }}</h1>
+        <div>
+            <a href="{{ path('app_admin_books') }}" class="btn btn-secondary me-2">
+                <i class="fas fa-arrow-left me-2"></i>Retour à la liste
+            </a>
+            <a href="{{ path('app_admin_book_edit', {'id': book.id}) }}" class="btn btn-primary me-2">
+                <i class="fas fa-edit me-2"></i>Modifier
+            </a>
+            <form action="{{ path('app_admin_book_delete', {'id': book.id}) }}" method="post" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce livre ?');">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ book.id) }}">
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash me-2"></i>Supprimer
+                </button>
+            </form>
+        </div>
+    </div>
+
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    <div class="row">
+        <div class="col-md-4">
+            {% if book.image %}
+                <img src="{{ asset('uploads/books/' ~ book.image) }}" alt="{{ book.title }}" class="img-fluid rounded">
+            {% else %}
+                <div class="text-center p-5 bg-light rounded">
+                    <i class="fas fa-book fa-5x text-muted"></i>
+                </div>
+            {% endif %}
+        </div>
+        <div class="col-md-8">
+            <h3>Informations</h3>
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <th>Auteur</th>
+                        <td>{{ book.author }}</td>
+                    </tr>
+                    <tr>
+                        <th>Description</th>
+                        <td>{{ book.description }}</td>
+                    </tr>
+                    <tr>
+                        <th>Statut</th>
+                        <td>
+                            {% if book.isAvailable %}
+                                <span class="badge bg-success">Disponible</span>
+                            {% else %}
+                                <span class="badge bg-danger">Emprunté</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <h3>Historique des emprunts</h3>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Emprunteur</th>
+                            <th>Emprunté le</th>
+                            <th>À rendre le</th>
+                            <th>Retourné le</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for loan in book.bookLoans|sort((a, b) => b.loanDate <=> a.loanDate) %}
+                            {% set isOverdue = loan.returnDate is null and loan.dueDate < date() %}
+                            <tr class="{{ isOverdue ? 'table-warning' : '' }}">
+                                <td>{{ loan.user.email }}</td>
+                                <td>{{ loan.loanDate|date('d/m/Y') }}</td>
+                                <td>
+                                    {{ loan.dueDate|date('d/m/Y') }}
+                                    {% if isOverdue %}
+                                        <span class="text-danger">
+                                            <i class="fas fa-exclamation-triangle"></i>
+                                            En retard
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if loan.returnDate %}
+                                        {{ loan.returnDate|date('d/m/Y') }}
+                                    {% else %}
+                                        <span class="text-muted">Non retourné</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#loanModal{{ loan.id }}">
+                                        <i class="fas fa-comment me-1"></i> Commenter
+                                    </button>
+                                    
+                                    <!-- Modal pour les commentaires -->
+                                    <div class="modal fade" id="loanModal{{ loan.id }}" tabindex="-1" aria-labelledby="loanModalLabel{{ loan.id }}" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="loanModalLabel{{ loan.id }}">Commentaires sur l'emprunt</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <!-- Affichage des commentaires existants -->
+                                                    {% if loan.loanNotes|length > 0 %}
+                                                        <div class="mb-3">
+                                                            <h6>Commentaires précédents :</h6>
+                                                            {% for note in loan.loanNotes %}
+                                                                <div class="card mb-2">
+                                                                    <div class="card-body">
+                                                                        <p class="card-text">{{ note.content }}</p>
+                                                                        <small class="text-muted">{{ note.createdAt|date('d/m/Y H:i') }}</small>
+                                                                    </div>
+                                                                </div>
+                                                            {% endfor %}
+                                                        </div>
+                                                    {% endif %}
+                                                    
+                                                    <!-- Formulaire pour ajouter un commentaire -->
+                                                    {% set form = forms[loan.id] %}
+                                                    {{ form_start(form) }}
+                                                        {{ form_widget(form) }}
+                                                        <div class="text-end mt-2">
+                                                            <button type="submit" class="btn btn-primary">
+                                                                <i class="fas fa-paper-plane me-1"></i> Envoyer
+                                                            </button>
+                                                        </div>
+                                                    {{ form_end(form) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center">Aucun emprunt enregistré pour ce livre.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <h3>Commentaires des utilisateurs</h3>
+            {% if book.comments|length > 0 %}
+                <div class="list-group">
+                    {% for comment in book.comments %}
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    Par {{ comment.user.email }} le {{ comment.createdAt|date('d/m/Y H:i') }}
+                                </small>
+                                <form action="{{ path('app_admin_comment_delete', {'id': comment.id}) }}" method="post" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ comment.id) }}">
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                            <p class="mb-0 mt-2">{{ comment.content }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-muted">Aucun commentaire</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

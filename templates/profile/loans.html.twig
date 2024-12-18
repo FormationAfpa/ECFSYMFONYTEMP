@@ -1,0 +1,105 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Emprunts - {{ parent() }}{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('app_profile') }}">Mon Profil</a></li>
+                    <li class="breadcrumb-item active">Mes Emprunts</li>
+                </ol>
+            </nav>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h2 class="h4 mb-4">Emprunts en cours</h2>
+                    {% if currentLoans|length > 0 %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Livre</th>
+                                        <th>Date d'emprunt</th>
+                                        <th>Date de retour prévue</th>
+                                        <th>Statut</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for loan in currentLoans %}
+                                        <tr>
+                                            <td>
+                                                <a href="{{ path('app_book_show', {'id': loan.book.id}) }}" class="text-decoration-none">
+                                                    {{ loan.book.title }}
+                                                </a>
+                                            </td>
+                                            <td>{{ loan.loanDate|date('d/m/Y') }}</td>
+                                            <td>{{ loan.dueDate|date('d/m/Y') }}</td>
+                                            <td>
+                                                {% set daysLeft = date(loan.dueDate).diff(date()).days %}
+                                                {% if daysLeft < 0 %}
+                                                    <span class="badge bg-danger">En retard de {{ -daysLeft }} jour(s)</span>
+                                                {% elseif daysLeft <= 3 %}
+                                                    <span class="badge bg-warning">Retour dans {{ daysLeft }} jour(s)</span>
+                                                {% else %}
+                                                    <span class="badge bg-success">En cours</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted mb-0">Vous n'avez aucun emprunt en cours.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="h4 mb-4">Historique des emprunts</h2>
+                    {% if pastLoans|length > 0 %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Livre</th>
+                                        <th>Emprunté le</th>
+                                        <th>Retourné le</th>
+                                        <th>État</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for loan in pastLoans %}
+                                        <tr>
+                                            <td>
+                                                <a href="{{ path('app_book_show', {'id': loan.book.id}) }}" class="text-decoration-none">
+                                                    {{ loan.book.title }}
+                                                </a>
+                                            </td>
+                                            <td>{{ loan.loanDate|date('d/m/Y') }}</td>
+                                            <td>{{ loan.returnDate|date('d/m/Y') }}</td>
+                                            <td>
+                                                {% if date(loan.returnDate) <= date(loan.dueDate) %}
+                                                    <span class="badge bg-success">Retourné à temps</span>
+                                                {% else %}
+                                                    <span class="badge bg-danger">Retourné en retard</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted mb-0">Vous n'avez aucun emprunt dans votre historique.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

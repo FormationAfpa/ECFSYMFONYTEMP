@@ -1,0 +1,147 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Livres{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .book-overdue {
+            background-color: #fff3cd;
+        }
+        .book-image {
+            max-height: 100px;
+            object-fit: cover;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Gestion des Livres</h1>
+        <div>
+            <a href="{{ path('app_admin_dashboard') }}" class="btn btn-secondary me-2">
+                <i class="fas fa-arrow-left me-2"></i>Retour au tableau de bord
+            </a>
+            <a href="{{ path('app_admin_book_new') }}" class="btn btn-success me-2">
+                <i class="fas fa-plus me-2"></i>Ajouter un livre
+            </a>
+            {% if showOverdue %}
+                <a href="{{ path('app_admin_books') }}" class="btn btn-primary">
+                    <i class="fas fa-book me-2"></i>Voir tous les livres
+                </a>
+            {% else %}
+                <a href="{{ path('app_admin_books', {'overdue': true}) }}" class="btn btn-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Voir les retards
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Titre</th>
+                    <th>Auteur</th>
+                    <th>État</th>
+                    <th>Emprunt en cours</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for book in books %}
+                    {% set currentLoan = null %}
+                    {% for loan in book.bookLoans %}
+                        {% if loan.returnDate is null %}
+                            {% set currentLoan = loan %}
+                        {% endif %}
+                    {% endfor %}
+
+                    {% set isOverdue = currentLoan and currentLoan.dueDate < date() %}
+                    
+                    <tr class="{{ isOverdue ? 'book-overdue' : '' }}">
+                        <td>
+                            {% if book.image %}
+                                <img src="{{ asset('uploads/books/' ~ book.image) }}" alt="{{ book.title }}" class="book-image">
+                            {% else %}
+                                <div class="text-center">
+                                    <i class="fas fa-book fa-3x text-muted"></i>
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ path('app_admin_book_show', {'id': book.id}) }}" class="text-decoration-none">
+                                {{ book.title }}
+                            </a>
+                        </td>
+                        <td>{{ book.author }}</td>
+                        <td>
+                            {% if book.isAvailable %}
+                                <span class="badge bg-success">Disponible</span>
+                            {% else %}
+                                <span class="badge bg-danger">Emprunté</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if currentLoan %}
+                                <div>
+                                    <strong>Emprunteur :</strong> {{ currentLoan.user.email }}<br>
+                                    <strong>Emprunté le :</strong> {{ currentLoan.loanDate|date('d/m/Y') }}<br>
+                                    <strong>À rendre le :</strong> {{ currentLoan.dueDate|date('d/m/Y') }}
+                                    {% if isOverdue %}
+                                        <br>
+                                        <span class="text-danger">
+                                            <i class="fas fa-exclamation-triangle"></i>
+                                            En retard de {{ currentLoan.dueDate|date('U')|date_modify('-' ~ date()|date('U') ~ ' seconds')|date('%a') }} jours
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            {% else %}
+                                <em class="text-muted">Aucun emprunt en cours</em>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="btn-group">
+                                <a href="{{ path('app_admin_book_show', {'id': book.id}) }}" class="btn btn-sm btn-info me-2" title="Voir les détails">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{{ path('app_admin_book_edit', {'id': book.id}) }}" class="btn btn-sm btn-primary me-2" title="Modifier">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                {% if not book.isAvailable and currentLoan %}
+                                    <form action="{{ path('app_admin_book_return', {'id': book.id}) }}" method="POST" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-success" title="Marquer comme retourné">
+                                            <i class="fas fa-undo"></i>
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center">
+                            {% if showOverdue %}
+                                <em>Aucun livre en retard</em>
+                            {% else %}
+                                <em>Aucun livre trouvé</em>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

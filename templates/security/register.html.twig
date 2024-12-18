@@ -1,0 +1,288 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription - {{ parent() }}{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-sm-10 col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-body p-4 p-sm-5">
+                    <h1 class="h3 mb-4 text-center">Créer un compte</h1>
+
+                    {{ form_start(registrationForm, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-floating">
+                                    {{ form_widget(registrationForm.firstName, {
+                                        'attr': {
+                                            'class': 'form-control' ~ (registrationForm.firstName.vars.valid ? '' : ' is-invalid'),
+                                            'placeholder': 'Prénom'
+                                        }
+                                    }) }}
+                                    {{ form_label(registrationForm.firstName) }}
+                                    <div class="invalid-feedback">
+                                        {{ form_errors(registrationForm.firstName) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <div class="form-floating">
+                                    {{ form_widget(registrationForm.lastName, {
+                                        'attr': {
+                                            'class': 'form-control' ~ (registrationForm.lastName.vars.valid ? '' : ' is-invalid'),
+                                            'placeholder': 'Nom'
+                                        }
+                                    }) }}
+                                    {{ form_label(registrationForm.lastName) }}
+                                    <div class="invalid-feedback">
+                                        {{ form_errors(registrationForm.lastName) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            {{ form_widget(registrationForm.email, {
+                                'attr': {
+                                    'class': 'form-control' ~ (registrationForm.email.vars.valid ? '' : ' is-invalid'),
+                                    'placeholder': 'Email'
+                                }
+                            }) }}
+                            {{ form_label(registrationForm.email) }}
+                            <div class="invalid-feedback">
+                                {{ form_errors(registrationForm.email) }}
+                            </div>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            {{ form_widget(registrationForm.birthDate, {
+                                'attr': {
+                                    'class': 'form-control' ~ (registrationForm.birthDate.vars.valid ? '' : ' is-invalid'),
+                                    'placeholder': 'Date de naissance'
+                                }
+                            }) }}
+                            {{ form_label(registrationForm.birthDate) }}
+                            <div class="invalid-feedback">
+                                {{ form_errors(registrationForm.birthDate) }}
+                            </div>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            {{ form_widget(registrationForm.address, {
+                                'attr': {
+                                    'class': 'form-control' ~ (registrationForm.address.vars.valid ? '' : ' is-invalid'),
+                                    'placeholder': 'Adresse'
+                                }
+                            }) }}
+                            {{ form_label(registrationForm.address) }}
+                            <div class="invalid-feedback">
+                                {{ form_errors(registrationForm.address) }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <div class="form-floating">
+                                    {{ form_widget(registrationForm.postalCode, {
+                                        'attr': {
+                                            'class': 'form-control' ~ (registrationForm.postalCode.vars.valid ? '' : ' is-invalid'),
+                                            'placeholder': 'Code postal'
+                                        }
+                                    }) }}
+                                    {{ form_label(registrationForm.postalCode) }}
+                                    <div class="invalid-feedback">
+                                        {{ form_errors(registrationForm.postalCode) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-8 mb-3">
+                                <div class="form-floating">
+                                    {{ form_widget(registrationForm.city, {
+                                        'attr': {
+                                            'class': 'form-control' ~ (registrationForm.city.vars.valid ? '' : ' is-invalid'),
+                                            'placeholder': 'Ville'
+                                        }
+                                    }) }}
+                                    {{ form_label(registrationForm.city) }}
+                                    <div class="invalid-feedback">
+                                        {{ form_errors(registrationForm.city) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            {{ form_widget(registrationForm.phone, {
+                                'attr': {
+                                    'class': 'form-control' ~ (registrationForm.phone.vars.valid ? '' : ' is-invalid'),
+                                    'placeholder': 'Téléphone'
+                                }
+                            }) }}
+                            {{ form_label(registrationForm.phone) }}
+                            <div class="invalid-feedback">
+                                {{ form_errors(registrationForm.phone) }}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_widget(registrationForm.plainPassword.first, {
+                                'attr': {
+                                    'class': 'form-control password-field' ~ (registrationForm.plainPassword.first.vars.valid ? '' : ' is-invalid'),
+                                    'placeholder': 'Mot de passe'
+                                }
+                            }) }}
+                            {{ form_label(registrationForm.plainPassword.first) }}
+                            <div class="invalid-feedback">
+                                {{ form_errors(registrationForm.plainPassword.first) }}
+                            </div>
+                            <div class="password-strength-meter mt-2"></div>
+                            <div class="password-requirements small text-muted mt-2">
+                                <p class="mb-1">Le mot de passe doit contenir au moins :</p>
+                                <ul class="mb-0">
+                                    <li id="length" class="text-danger">12 caractères</li>
+                                    <li id="uppercase" class="text-danger">Une lettre majuscule</li>
+                                    <li id="lowercase" class="text-danger">Une lettre minuscule</li>
+                                    <li id="number" class="text-danger">Un chiffre</li>
+                                    <li id="special" class="text-danger">Un caractère spécial (@$!%*?&)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_widget(registrationForm.plainPassword.second, {
+                                'attr': {
+                                    'class': 'form-control' ~ (registrationForm.plainPassword.second.vars.valid ? '' : ' is-invalid'),
+                                    'placeholder': 'Confirmation du mot de passe'
+                                }
+                            }) }}
+                            {{ form_label(registrationForm.plainPassword.second) }}
+                            <div class="invalid-feedback">
+                                {{ form_errors(registrationForm.plainPassword.second) }}
+                            </div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-user-plus me-2"></i>S'inscrire
+                            </button>
+                        </div>
+                    {{ form_end(registrationForm) }}
+
+                    <div class="mt-4 text-center">
+                        <p class="mb-0">Déjà inscrit ? 
+                            <a href="{{ path('app_login') }}" class="text-decoration-none">
+                                Se connecter
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    // Validation des formulaires Bootstrap
+    (function () {
+        'use strict'
+        var forms = document.querySelectorAll('.needs-validation')
+        Array.prototype.slice.call(forms).forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+            }, false)
+        })
+    })()
+
+    // Protection contre le double envoi du formulaire
+    document.querySelector('form').addEventListener('submit', function(e) {
+        var submitButton = this.querySelector('button[type="submit"]');
+        if (submitButton.disabled) {
+            e.preventDefault();
+        } else {
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Inscription en cours...';
+        }
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const passwordField = document.querySelector('.password-field');
+        const requirements = {
+            length: document.getElementById('length'),
+            uppercase: document.getElementById('uppercase'),
+            lowercase: document.getElementById('lowercase'),
+            number: document.getElementById('number'),
+            special: document.getElementById('special')
+        };
+
+        const strengthMeter = document.querySelector('.password-strength-meter');
+        strengthMeter.style.height = '4px';
+        strengthMeter.style.transition = 'all 0.3s ease';
+
+        passwordField.addEventListener('input', function() {
+            const password = this.value;
+            let strength = 0;
+            
+            // Vérification des critères
+            if (password.length >= 12) {
+                strength++;
+                requirements.length.classList.replace('text-danger', 'text-success');
+            } else {
+                requirements.length.classList.replace('text-success', 'text-danger');
+            }
+            
+            if (/[A-Z]/.test(password)) {
+                strength++;
+                requirements.uppercase.classList.replace('text-danger', 'text-success');
+            } else {
+                requirements.uppercase.classList.replace('text-success', 'text-danger');
+            }
+            
+            if (/[a-z]/.test(password)) {
+                strength++;
+                requirements.lowercase.classList.replace('text-danger', 'text-success');
+            } else {
+                requirements.lowercase.classList.replace('text-success', 'text-danger');
+            }
+            
+            if (/[0-9]/.test(password)) {
+                strength++;
+                requirements.number.classList.replace('text-danger', 'text-success');
+            } else {
+                requirements.number.classList.replace('text-success', 'text-danger');
+            }
+            
+            if (/[@$!%*?&]/.test(password)) {
+                strength++;
+                requirements.special.classList.replace('text-danger', 'text-success');
+            } else {
+                requirements.special.classList.replace('text-success', 'text-danger');
+            }
+
+            // Mise à jour de la barre de force
+            const width = (strength / 5) * 100;
+            strengthMeter.style.width = width + '%';
+            
+            // Couleur selon la force
+            if (strength <= 2) {
+                strengthMeter.style.backgroundColor = '#dc3545'; // Rouge
+            } else if (strength <= 3) {
+                strengthMeter.style.backgroundColor = '#ffc107'; // Jaune
+            } else if (strength <= 4) {
+                strengthMeter.style.backgroundColor = '#20c997'; // Vert clair
+            } else {
+                strengthMeter.style.backgroundColor = '#198754'; // Vert
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,92 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Utilisateurs - Administration{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="mb-4">Gestion des Utilisateurs</h1>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nom</th>
+                                <th>Prénom</th>
+                                <th>Email</th>
+                                <th>Rôle</th>
+                                <th>Statut</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                                <tr>
+                                    <td>{{ user.id }}</td>
+                                    <td>{{ user.lastName }}</td>
+                                    <td>{{ user.firstName }}</td>
+                                    <td>{{ user.email }}</td>
+                                    <td>
+                                        {% if 'ROLE_ADMIN' in user.roles %}
+                                            <span class="badge bg-danger">Admin</span>
+                                        {% else %}
+                                            <span class="badge bg-info">Utilisateur</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if user.isBanned %}
+                                            <span class="badge bg-danger">Banni</span>
+                                        {% else %}
+                                            <span class="badge bg-success">Actif</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            {% if app.user != user %}
+                                                <form action="{{ path('admin_user_toggle_ban', {'id': user.id}) }}" method="post" class="d-inline">
+                                                    <button type="submit" class="btn btn-sm {% if user.isBanned %}btn-success{% else %}btn-warning{% endif %}" onclick="return confirm('Êtes-vous sûr de vouloir {% if user.isBanned %}débannir{% else %}bannir{% endif %} cet utilisateur ?')">
+                                                        {% if user.isBanned %}
+                                                            <i class="fas fa-user-check"></i> Débannir
+                                                        {% else %}
+                                                            <i class="fas fa-user-slash"></i> Bannir
+                                                        {% endif %}
+                                                    </button>
+                                                </form>
+
+                                                <form action="{{ path('admin_user_toggle_role', {'id': user.id}) }}" method="post" class="d-inline ms-2">
+                                                    <button type="submit" class="btn btn-sm {% if 'ROLE_ADMIN' in user.roles %}btn-info{% else %}btn-secondary{% endif %}" onclick="return confirm('Êtes-vous sûr de vouloir modifier le rôle de cet utilisateur ?')">
+                                                        {% if 'ROLE_ADMIN' in user.roles %}
+                                                            <i class="fas fa-user"></i> Retirer Admin
+                                                        {% else %}
+                                                            <i class="fas fa-user-shield"></i> Rendre Admin
+                                                        {% endif %}
+                                                    </button>
+                                                </form>
+                                            {% else %}
+                                                <span class="text-muted">Vous-même</span>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

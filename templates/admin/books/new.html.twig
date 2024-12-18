@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouveau livre{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Ajouter un nouveau livre</h1>
+        <a href="{{ path('app_admin_books') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Retour à la liste
+        </a>
+    </div>
+
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    <div class="card">
+        <div class="card-body">
+            {{ form_start(form) }}
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.title) }}
+                    {{ form_row(form.author) }}
+                    {{ form_row(form.isbn) }}
+                    {{ form_row(form.publicationYear) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.imageFile) }}
+                    {{ form_row(form.condition) }}
+                    {{ form_row(form.stock) }}
+                </div>
+            </div>
+            {{ form_row(form.summary) }}
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-2"></i>Créer
+                </button>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

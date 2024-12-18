@@ -1,0 +1,60 @@
+/* Styles pour l'affichage des livres */
+.status-container {
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+.overdue-warning {
+    background-color: rgba(255, 0, 0, 0.1);
+    border-left: 4px solid #dc3545;
+}
+
+.condition-badge {
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 0.9em;
+}
+
+.excellent-etat {
+    background-color: #28a745;
+    color: white;
+}
+
+.bon-etat {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.etat-moyen {
+    background-color: #ffc107;
+    color: black;
+}
+
+.mauvais-etat {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Animation pour attirer l'attention sur les retards */
+@keyframes warning-pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.8; }
+    100% { opacity: 1; }
+}
+
+.text-danger i {
+    animation: warning-pulse 1.5s infinite;
+}
+
+/* Style pour les informations de prolongation */
+.text-info i {
+    color: #17a2b8;
+}
+
+/* Responsive design pour petits écrans */
+@media (max-width: 768px) {
+    .status-container {
+        margin-top: 10px;
+    }
+}

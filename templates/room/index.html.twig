@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Salles de travail{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1 class="mb-4">Salles de travail</h1>
+
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    {% if not app.user %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>
+            Vous devez être <a href="{{ path('app_login') }}">connecté</a> et avoir un abonnement actif pour réserver une salle.
+        </div>
+    {% elseif not app.user.hasActiveSubscription %}
+        <div class="alert alert-warning">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            Vous devez avoir un abonnement actif pour réserver une salle. 
+            <a href="{{ path('app_subscription') }}">Voir les abonnements disponibles</a>
+        </div>
+    {% endif %}
+
+    <div class="row">
+        {% for room in rooms %}
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ room.name }}</h5>
+                        <p class="card-text">
+                            <strong>Capacité :</strong> {{ room.capacity }} personnes<br>
+                            <strong>Équipements :</strong>
+                        </p>
+                        <ul class="list-unstyled">
+                            {% if room.hasWifi %}
+                                <li><i class="fas fa-wifi me-2 text-success"></i>Wi-Fi</li>
+                            {% endif %}
+                            {% if room.hasProjector %}
+                                <li><i class="fas fa-projector me-2 text-success"></i>Projecteur</li>
+                            {% endif %}
+                            {% if room.hasWhiteboard %}
+                                <li><i class="fas fa-chalkboard me-2 text-success"></i>Tableau blanc</li>
+                            {% endif %}
+                            {% if room.hasPowerOutlets %}
+                                <li><i class="fas fa-plug me-2 text-success"></i>Prises électriques</li>
+                            {% endif %}
+                            {% if room.hasTV %}
+                                <li><i class="fas fa-tv me-2 text-success"></i>Télévision</li>
+                            {% endif %}
+                            {% if room.hasAirConditioning %}
+                                <li><i class="fas fa-snowflake me-2 text-success"></i>Climatisation</li>
+                            {% endif %}
+                        </ul>
+                        <div class="mt-3">
+                            <a href="{{ path('app_room_show', {'id': room.id}) }}" class="btn btn-primary">
+                                <i class="fas fa-calendar-alt me-2"></i>Voir les disponibilités
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-12">
+                <div class="alert alert-info">
+                    Aucune salle de travail n'est disponible pour le moment.
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

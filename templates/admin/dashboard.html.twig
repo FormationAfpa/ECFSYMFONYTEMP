@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tableau de bord administrateur{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1>Tableau de bord administrateur</h1>
+    
+    <div class="row mt-4">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-users me-2"></i>
+                        Gestion des utilisateurs
+                    </h5>
+                    <p class="card-text">Gérer les utilisateurs, leurs rôles et leurs statuts.</p>
+                    <a href="{{ path('admin_user_index') }}" class="btn btn-primary">
+                        Gérer les utilisateurs
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-door-open me-2"></i>
+                        Gestion des salles
+                    </h5>
+                    <p class="card-text">Gérer les salles de travail et leurs réservations.</p>
+                    <a href="{{ path('admin_room_index') }}" class="btn btn-primary">
+                        Gérer les salles
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-credit-card me-2"></i>
+                        Gestion des abonnements
+                    </h5>
+                    <p class="card-text">Gérer les abonnements et leurs paramètres.</p>
+                    <a href="{{ path('admin_subscription_index') }}" class="btn btn-primary">
+                        Gérer les abonnements
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-book me-2"></i>
+                        Gestion des livres
+                    </h5>
+                    <p class="card-text">Gérer les livres, leurs catégories et leurs emprunts.</p>
+                    <a href="{{ path('admin_book_index') }}" class="btn btn-primary">
+                        Gérer les livres
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

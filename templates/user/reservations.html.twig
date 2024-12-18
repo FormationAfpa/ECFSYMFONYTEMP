@@ -1,0 +1,91 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes réservations{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1>Mes réservations</h1>
+
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Réservations en cours et à venir</h5>
+                </div>
+                <div class="card-body">
+                    {% if currentReservations is empty %}
+                        <p class="text-muted">Vous n'avez aucune réservation en cours ou à venir.</p>
+                    {% else %}
+                        <div class="list-group">
+                            {% for reservation in currentReservations %}
+                                <div class="list-group-item">
+                                    <div class="d-flex w-100 justify-content-between align-items-center">
+                                        <h6 class="mb-1">{{ reservation.room.name }}</h6>
+                                        <small class="text-muted">
+                                            {% if reservation.startTime|date('Y-m-d') == 'now'|date('Y-m-d') %}
+                                                Aujourd'hui
+                                            {% else %}
+                                                {{ reservation.startTime|date('d/m/Y') }}
+                                            {% endif %}
+                                        </small>
+                                    </div>
+                                    <p class="mb-1">
+                                        {{ reservation.startTime|date('H:i') }} - {{ reservation.endTime|date('H:i') }}
+                                    </p>
+                                    <small class="text-muted">{{ reservation.purpose }}</small>
+                                    
+                                    {% if reservation.startTime > date() %}
+                                        <form method="post" action="{{ path('app_user_reservation_cancel', {'id': reservation.id}) }}" class="mt-2" onsubmit="return confirm('Êtes-vous sûr de vouloir annuler cette réservation ?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ reservation.id) }}">
+                                            <button type="submit" class="btn btn-danger btn-sm">
+                                                <i class="fas fa-times me-2"></i>Annuler
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Historique des réservations</h5>
+                </div>
+                <div class="card-body">
+                    {% if pastReservations is empty %}
+                        <p class="text-muted">Vous n'avez aucune réservation passée.</p>
+                    {% else %}
+                        <div class="list-group">
+                            {% for reservation in pastReservations %}
+                                <div class="list-group-item">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">{{ reservation.room.name }}</h6>
+                                        <small class="text-muted">{{ reservation.startTime|date('d/m/Y') }}</small>
+                                    </div>
+                                    <p class="mb-1">
+                                        {{ reservation.startTime|date('H:i') }} - {{ reservation.endTime|date('H:i') }}
+                                    </p>
+                                    <small class="text-muted">{{ reservation.purpose }}</small>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,107 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Calendrier des réservations - {{ room.name }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css">
+    <style>
+        .fc-event {
+            cursor: pointer;
+        }
+        .fc-event-title {
+            white-space: normal;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/fr.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'timeGridWeek',
+                locale: 'fr',
+                slotMinTime: '08:00:00',
+                slotMaxTime: '19:00:00',
+                allDaySlot: false,
+                weekends: false,
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'timeGridWeek,timeGridDay'
+                },
+                events: [
+                    {% for reservation in reservations %}
+                    {
+                        title: '{{ reservation.user.firstname }} {{ reservation.user.lastname }}',
+                        start: '{{ reservation.startTime|date('Y-m-d\\TH:i:s') }}',
+                        end: '{{ reservation.endTime|date('Y-m-d\\TH:i:s') }}',
+                        description: '{{ reservation.purpose }}',
+                        extendedProps: {
+                            userEmail: '{{ reservation.user.email }}'
+                        }
+                    }{% if not loop.last %},{% endif %}
+                    {% endfor %}
+                ],
+                eventClick: function(info) {
+                    var event = info.event;
+                    var content = `
+                        <div class="modal-header">
+                            <h5 class="modal-title">Détails de la réservation</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p><strong>Utilisateur :</strong> ${event.title}</p>
+                            <p><strong>Email :</strong> ${event.extendedProps.userEmail}</p>
+                            <p><strong>Début :</strong> ${event.start.toLocaleString()}</p>
+                            <p><strong>Fin :</strong> ${event.end.toLocaleString()}</p>
+                            <p><strong>Motif :</strong> ${event.extendedProps.description}</p>
+                        </div>
+                    `;
+                    var modal = new bootstrap.Modal(document.getElementById('eventModal'));
+                    document.querySelector('#eventModal .modal-content').innerHTML = content;
+                    modal.show();
+                }
+            });
+            calendar.render();
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Calendrier - {{ room.name }}</h1>
+        <div>
+            <a href="{{ path('admin_room_reserve', {'id': room.id}) }}" class="btn btn-success me-2">
+                <i class="fas fa-plus me-2"></i>Nouvelle réservation
+            </a>
+            <a href="{{ path('admin_room_show', {'id': room.id}) }}" class="btn btn-secondary me-2">
+                <i class="fas fa-arrow-left me-2"></i>Retour aux détails
+            </a>
+            <a href="{{ path('admin_room_index') }}" class="btn btn-primary">
+                <i class="fas fa-list me-2"></i>Liste des salles
+            </a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div id="calendar"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal pour les détails de réservation -->
+<div class="modal fade" id="eventModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Le contenu sera injecté par JavaScript -->
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,24 @@
+{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+    <div class="row">
+        <div class="col-md-6">
+            {{ form_row(form.title, {'attr': {'class': 'form-control'}}) }}
+            {{ form_row(form.author, {'attr': {'class': 'form-control'}}) }}
+            {{ form_row(form.isbn, {'attr': {'class': 'form-control'}}) }}
+            {{ form_row(form.publicationYear, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        <div class="col-md-6">
+            {{ form_row(form.category, {'attr': {'class': 'form-control'}}) }}
+            {{ form_row(form.condition, {'attr': {'class': 'form-control'}}) }}
+            {{ form_row(form.stock, {'attr': {'class': 'form-control'}}) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            {{ form_row(form.summary, {'attr': {'class': 'form-control'}}) }}
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">
+        <i class="fas fa-save me-2"></i>{{ button_label|default('Enregistrer') }}
+    </button>
+{{ form_end(form) }}

@@ -1,0 +1,123 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des abonnements{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1>Gestion des abonnements</h1>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    <h2 class="mt-4 mb-3">Abonnements actifs</h2>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Utilisateur</th>
+                    <th>Type</th>
+                    <th>Prix</th>
+                    <th>Date de début</th>
+                    <th>Date de fin</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for subscription in active_subscriptions %}
+                <tr>
+                    <td>{{ subscription.id }}</td>
+                    <td>
+                        {{ subscription.user.firstName }} {{ subscription.user.lastName }}<br>
+                        <small class="text-muted">{{ subscription.user.email }}</small>
+                    </td>
+                    <td>{{ subscription.type }}</td>
+                    <td>{{ subscription.price }}€</td>
+                    <td>{{ subscription.startDate|date('d/m/Y') }}</td>
+                    <td>{{ subscription.endDate|date('d/m/Y') }}</td>
+                    <td>
+                        <div class="btn-group">
+                            <a href="{{ path('admin_subscription_show', {'id': subscription.id}) }}" 
+                               class="btn btn-sm btn-info" title="Voir les détails">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <form method="post" action="{{ path('admin_subscription_cancel', {'id': subscription.id}) }}" 
+                                  class="d-inline ms-1" 
+                                  onsubmit="return confirm('Êtes-vous sûr de vouloir annuler cet abonnement ?')">
+                                <input type="hidden" name="_token" value="{{ csrf_token('cancel' ~ subscription.id) }}">
+                                <button type="submit" class="btn btn-sm btn-warning" title="Annuler l'abonnement">
+                                    <i class="fas fa-ban"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="7" class="text-center">Aucun abonnement actif</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <h2 class="mt-5 mb-3">Abonnements expirés</h2>
+    <div class="table-responsive">
+        <table class="table table-striped table-secondary">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Utilisateur</th>
+                    <th>Type</th>
+                    <th>Prix</th>
+                    <th>Date de début</th>
+                    <th>Date de fin</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for subscription in expired_subscriptions %}
+                <tr>
+                    <td>{{ subscription.id }}</td>
+                    <td>
+                        {{ subscription.user.firstName }} {{ subscription.user.lastName }}<br>
+                        <small class="text-muted">{{ subscription.user.email }}</small>
+                    </td>
+                    <td>{{ subscription.type }}</td>
+                    <td>{{ subscription.price }}€</td>
+                    <td>{{ subscription.startDate|date('d/m/Y') }}</td>
+                    <td>{{ subscription.endDate|date('d/m/Y') }}</td>
+                    <td>
+                        <a href="{{ path('admin_subscription_show', {'id': subscription.id}) }}" 
+                           class="btn btn-sm btn-info" title="Voir les détails">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="7" class="text-center">Aucun abonnement expiré</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        // Ajout de tooltips Bootstrap pour les boutons d'action
+        document.addEventListener('DOMContentLoaded', function() {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[title]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            })
+        });
+    </script>
+{% endblock %}
+
+{% endblock %}

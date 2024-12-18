@@ -1,4 +1,5 @@
 ###> symfony/framework-bundle ###
+/.env
 /.env.local
 /.env.local.php
 /.env.*.local
@@ -32,6 +33,21 @@
 # OS generated files
 .DS_Store
 Thumbs.db
+desktop.ini
+
+# Logs and databases
+*.log
+*.sqlite
+*.sqlite3
+
+# Environment files
+.env.*
+!.env.example
+
+# Cache and temp files
+/var/
+*.cache
+/public/uploads/
 
 # Cascade files
 /.cascade/

@@ -1,90 +1,62 @@
-# Projet de Gestion de Bibliothèque 
- une application web de gestion de bibliothèque développée avec Symfony 6. Elle permet la gestion des livres, des emprunts, et des abonnements des utilisateurs.
+# Bibliothèque en ligne
 
-Technologies Utilisées
-- Symfony 6
-- PHP 8
-- Doctrine ORM
-- Twig Template Engine
-- JavaScript
-- CSS
-- MySQL
+## Configuration du projet
 
-Structure du Projet
+1. Clonez le dépôt :
+```bash
+git clone [URL_DU_REPO]
+cd [NOM_DU_PROJET]
+```
 
-Backend
-- `/src/Controller/` : Contrôleurs de l'application
-- `/src/Entity/` : Entités Doctrine
-- `/src/Form/` : Formulaires Symfony
-- `/src/Repository/` : Repositories pour l'accès aux données
+2. Installez les dépendances :
+```bash
+composer install
+npm install
+```
 
-Frontend
-- `/templates/` : Templates Twig
-- `/public/css/` : Feuilles de style CSS
-- `/public/js/` : Scripts JavaScript
-- `/assets/` : Resources frontend (images, etc.)
+3. Configuration de l'environnement :
+   - Copiez le fichier `.env.example` en `.env.local`
+   - Modifiez les variables dans `.env.local` selon votre environnement :
+     - `DATABASE_URL` : Configurez votre connexion à la base de données
+     - `APP_SECRET` : Générez une nouvelle clé secrète
+     - `MAILER_DSN` : Configurez votre service d'envoi d'emails
 
-Fonctionnalités Principales
+4. Créez la base de données :
+```bash
+php bin/console doctrine:database:create
+php bin/console doctrine:migrations:migrate
+```
 
-Gestion des Livres
-- Catalogue complet des livres
-- Système de recherche
-- Gestion des emprunts
-- Système de notation et commentaires
+5. Chargez les fixtures (données de test) si nécessaire :
+```bash
+php bin/console doctrine:fixtures:load
+```
 
-### Gestion des Utilisateurs
-- Inscription et authentification
-- Profils utilisateurs
+6. Lancez le serveur de développement :
+```bash
+symfony serve -d
+```
+
+## Fonctionnalités
+
+- Gestion des livres
+- Système de commentaires
+- Système de notation
 - Gestion des abonnements
-- Historique des emprunts
+- Authentification des utilisateurs
 
-### Administration
-- Interface d'administration sécurisée
-- Gestion du catalogue
-- Gestion des utilisateurs
-- Suivi des emprunts
+## Sécurité
 
-## Configuration et Installation
+- Ne jamais commiter les fichiers `.env` contenant des informations sensibles
+- Toujours utiliser `.env.local` pour les configurations locales
+- Les secrets de production doivent être gérés via les variables d'environnement
 
-### Prérequis
-- PHP 8.0 ou supérieur
-- Composer
-- Symfony CLI
-- MySQL/MariaDB
+## Contribution
 
-### Installation
-1. Cloner le repository
-2. Installer les dépendances :
-   ```bash
-   composer install
-   ```
-3. Configurer la base de données dans `.env.local`
-4. Créer la base de données :
-   ```bash
-   php bin/console doctrine:database:create
-   ```
-5. Exécuter les migrations :
-   ```bash
-   php bin/console doctrine:migrations:migrate
-   ```
-6. Lancer le serveur de développement :
-   ```bash
-   symfony server:start
-   ```
+1. Créez une branche pour votre fonctionnalité
+2. Committez vos changements
+3. Créez une Pull Request
 
-## Structure de la Base de Données
+## License
 
-### Tables Principales
-- `user` : Informations des utilisateurs
-- `book` : Catalogue des livres
-- `loan` : Gestion des emprunts
-- `subscription` : Abonnements
-- `book_comment` : Commentaires sur les livres
-
-Securité
- Authentification utilisateur
-- Rôles et permissions
-- Protection CSRF
-- Validation des données
-
-
+[Votre licence]
